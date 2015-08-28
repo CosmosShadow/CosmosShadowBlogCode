@@ -3,7 +3,7 @@ clear
 m = 100;
 n = 3;
 
-S = fix(rand(m, 3)*50);				%随机数(10, 3)
+S = fix(rand(m, n)*50);				%随机数
 S = S - repmat(mean(S), m,1);	%中心化: 均值为0
 C = (S'*S)./(size(S,1)-1)			%'协方差
 
