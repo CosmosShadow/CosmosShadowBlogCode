@@ -1,0 +1,1 @@
+该代码来源: [Peter's notes: How to implement a recurrent neural network Part 2](http://peterroelants.github.io/posts/rnn_implementation_part02/)  
