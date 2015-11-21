@@ -76,6 +76,46 @@ class RNNNumpy:
                 # Update delta for next step
                 delta_t = self.W.T.dot(delta_t) * (1 - s[bptt_step-1] ** 2)
         return [dLdU, dLdV, dLdW]
+        
+    def gradient_check(self, x, y, h=0.001, error_threshold=0.01):
+        # Calculate the gradients using backpropagation. We want to checker if these are correct.
+        bptt_gradients = model.bptt(x, y)
+        # List of all parameters we want to check.
+        model_parameters = ['U', 'V', 'W']
+        # Gradient check for each parameter
+        for pidx, pname in enumerate(model_parameters):
+            # Get the actual parameter value from the mode, e.g. model.W
+            parameter = operator.attrgetter(pname)(self)
+            print "Performing gradient check for parameter %s with size %d." % (pname, np.prod(parameter.shape))
+            # Iterate over each element of the parameter matrix, e.g. (0,0), (0,1), ...
+            it = np.nditer(parameter, flags=['multi_index'], op_flags=['readwrite'])
+            while not it.finished:
+                ix = it.multi_index
+                # Save the original value so we can reset it later
+                original_value = parameter[ix]
+                # Estimate the gradient using (f(x+h) - f(x-h))/(2*h)
+                parameter[ix] = original_value + h
+                gradplus = model.calculate_total_loss([x],[y])
+                parameter[ix] = original_value - h
+                gradminus = model.calculate_total_loss([x],[y])
+                estimated_gradient = (gradplus - gradminus)/(2*h)
+                # Reset parameter to original value
+                parameter[ix] = original_value
+                # The gradient for this parameter calculated using backpropagation
+                backprop_gradient = bptt_gradients[pidx][ix]
+                # calculate The relative error: (|x - y|/(|x| + |y|))
+                relative_error = np.abs(backprop_gradient - estimated_gradient)/(np.abs(backprop_gradient) + np.abs(estimated_gradient))
+                # If the error is to large fail the gradient check
+                if relative_error > error_threshold:
+                    print "Gradient Check ERROR: parameter=%s ix=%s" % (pname, ix)
+                    print "+h Loss: %f" % gradplus
+                    print "-h Loss: %f" % gradminus
+                    print "Estimated_gradient: %f" % estimated_gradient
+                    print "Backpropagation gradient: %f" % backprop_gradient
+                    print "Relative Error: %f" % relative_error
+                    return 
+                it.iternext()
+            print "Gradient check for parameter %s passed." % (pname)
 
     # Performs one step of SGD.
     def numpy_sdg_step(self, x, y, learning_rate):
@@ -90,37 +130,4 @@ def softmax(x):
     xt = np.exp(x - np.max(x))
     return xt / np.sum(xt)
 
-# Outer SGD Loop
-# - model: The RNN model instance
-# - X_train: The training data set
-# - y_train: The training data labels
-# - learning_rate: Initial learning rate for SGD
-# - nepoch: Number of times to iterate through the complete dataset
-# - evaluate_loss_after: Evaluate the loss after this many epochs
-def train_with_sgd(model, X_train, y_train, learning_rate=0.005, nepoch=100, evaluate_loss_after=5):
-    # We keep track of the losses so we can plot them later
-    losses = []
-    num_examples_seen = 0
-    for epoch in range(nepoch):
-        # Optionally evaluate the loss
-        if (epoch % evaluate_loss_after == 0):
-            loss = model.calculate_loss(X_train, y_train)
-            losses.append((num_examples_seen, loss))
-            time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            print "%s: Loss after num_examples_seen=%d epoch=%d: %f" % (time, num_examples_seen, epoch, loss)
-            # Adjust the learning rate if loss increases
-            if (len(losses) > 1 and losses[-1][1] > losses[-2][1]):
-                learning_rate = learning_rate * 0.5  
-                print "Setting learning rate to %f" % learning_rate
-            sys.stdout.flush()
-        # For each training example...
-        for i in range(len(y_train)):
-            # One SGD step
-            model.numpy_sdg_step(X_train[i], y_train[i], learning_rate)
-            num_examples_seen += 1
-            
 
-np.random.seed(10)
-# Train on a small subset of the data to see what happens
-model = RNNNumpy(vocabulary_size)
-losses = train_with_sgd(model, X_train[:100], y_train[:100], nepoch=10, evaluate_loss_after=1)
