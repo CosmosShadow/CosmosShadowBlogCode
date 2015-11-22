@@ -17,7 +17,7 @@ num_examples = len(train_X) # training set size
 nn_input_dim = 2 # input layer dimensionality
 nn_output_dim = 2 # output layer dimensionality
 nn_hdim = 1000 # hiden layer dimensionality
- 
+
 # Gradient descent parameters (I picked these by hand)
 epsilon = np.float32(0.01) # learning rate for gradient descent
 reg_lambda = np.float32(0.01) # regularization strength 
@@ -85,27 +85,6 @@ def build_model(num_passes=20000, print_loss=False):
         if print_loss and i % 1 == 0:
             print "Loss after iteration %i: %f" %(i, calculate_loss())
  
- # Helper function to plot a decision boundary.
-# If you don't fully understand this function don't worry, it just generates the contour plot below.
-def plot_decision_boundary(pred_func):
-    # Set min and max values and give it some padding
-    x_min, x_max = train_X[:, 0].min() - .5, train_X[:, 0].max() + .5
-    y_min, y_max = train_X[:, 1].min() - .5, train_X[:, 1].max() + .5
-    h = 0.01
-    # Generate a grid of points with distance h between them
-    xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
-    xx = np.float32(xx)
-    yy = np.float32(yy)
-
-    xx = theano.shared(xx.astype('float32'))
-    yy = theano.shared(yy.astype('float32'))
-
-    # Predict the function value for the whole gid
-    Z = pred_func(np.c_[xx.ravel(), yy.ravel()])
-    Z = Z.reshape(xx.shape)
-    # Plot the contour and training examples
-    plt.contourf(xx, yy, Z, cmap=plt.cm.Spectral)
-    plt.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.Spectral)
 
 # Profiling
 # theano.config.profile = True
@@ -114,10 +93,7 @@ def plot_decision_boundary(pred_func):
 # theano.printing.debugprint(gradient_step) 
 # print gradient_step.profile.summary()
 
-build_model(num_passes=1, print_loss=True)
-
-plot_decision_boundary(lambda x: predict(x))
-plt.title("Decision Boundary for hidden layer size 3")
+build_model(num_passes=10, print_loss=True)
 
 
 
