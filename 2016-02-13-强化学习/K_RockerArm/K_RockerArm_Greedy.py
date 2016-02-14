@@ -56,7 +56,7 @@ if __name__ == '__main__':
 	# plt.plot(x, z, label="$cos(x)$")
 	plt.xlabel("Time(s)")
 	plt.ylabel("Average Reward")
-	# plt.title("pyplot firs image")
+	plt.title("K Rocker Arm with Greedy")
 
 	plt.legend()     #显示图示
 	plt.show()
