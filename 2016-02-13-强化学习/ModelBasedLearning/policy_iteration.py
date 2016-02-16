@@ -8,7 +8,7 @@ from config import *
 data_path = 'data'
 P = np.load(data_path + '/P.npy')
 R = np.load(data_path + '/R.npy')
-T = 10
+T = 5
 
 V = np.zeros(X_count)
 Pi = np.ones((X_count, A_count)) / float(A_count)
@@ -39,6 +39,7 @@ def newPolicy():
 				reward = R[x_from_index, x_to_index, a_index]
 				value += possiblity_transfer * (reward / float(T+1) + T * V[x_to_index] / float(T+1))
 			Q[x_from_index, a_index] = value
+	print Q
 	QMaxIndex = np.argmax(Q, axis=1)
 	Pitmp = np.zeros((X_count, A_count))
 	for i in range(X_count):
@@ -51,6 +52,7 @@ def purePolicy():
 for i in range(100):
 	Piclear = purePolicy()
 	print Piclear
+	# print V
 	V = newValue()
 	Pi = newPolicy()
 	if np.array_equal(Piclear, purePolicy()):
