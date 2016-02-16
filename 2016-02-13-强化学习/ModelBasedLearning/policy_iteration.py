@@ -22,8 +22,8 @@ def newValue():
 			for a_index in range(A_count):
 				for x_to_index in range(X_count):
 					possiblity_action = Pi[x_from_index, a_index]
-					possiblity_transfer = P[x_from_index, x_to_index, a_index]
-					reward = R[x_from_index, x_to_index, a_index]
+					possiblity_transfer = P[x_from_index, a_index, x_to_index]
+					reward = R[x_from_index, a_index, x_to_index]
 					value += possiblity_action * possiblity_transfer * (reward / float(step) + ((step - 1) / float(step)) * Vtmp[x_to_index])
 			Vtmptmp[x_from_index] = value
 		Vtmp = Vtmptmp
@@ -35,8 +35,8 @@ def newPolicy():
 		for a_index in range(A_count):
 			value = 0.0
 			for x_to_index in range(X_count):
-				possiblity_transfer = P[x_from_index, x_to_index, a_index]
-				reward = R[x_from_index, x_to_index, a_index]
+				possiblity_transfer = P[x_from_index, a_index, x_to_index]
+				reward = R[x_from_index, a_index, x_to_index]
 				value += possiblity_transfer * (reward / float(T+1) + T * V[x_to_index] / float(T+1))
 			Q[x_from_index, a_index] = value
 	# print Q
@@ -52,10 +52,10 @@ def purePolicy():
 for i in range(100):
 	Piclear = purePolicy()
 	print Piclear
-	# print V
 	V = newValue()
 	Pi = newPolicy()
 	if np.array_equal(Piclear, purePolicy()):
+		print V
 		break
 
 

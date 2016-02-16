@@ -13,19 +13,19 @@ V = np.zeros(X_count)
 t = 1
 
 def newValue():
-	print t
+	# print t
 	Q = np.zeros((X_count, A_count))
 	for x_from_index in range(X_count):
 		for a_index in range(A_count):
-			print ''
 			value = 0.0
 			for x_to_index in range(X_count):
-				possiblity_transfer = P[x_from_index, x_to_index, a_index]
-				reward = R[x_from_index, x_to_index, a_index]
+				possiblity_transfer = P[x_from_index, a_index, x_to_index]
+				reward = R[x_from_index, a_index, x_to_index]
 				one_value = possiblity_transfer * (reward / float(t) + (t - 1) * V[x_to_index] / float(t))
-				print t, possiblity_transfer, reward, V[x_to_index], one_value
+				# print t, possiblity_transfer, reward, V[x_to_index], one_value
 				value += one_value
-			print value
+			# print value
+			# print ''
 			Q[x_from_index, a_index] = value
 	Vtmp = np.max(Q, axis=1)
 	return Vtmp
@@ -45,8 +45,8 @@ def thePolicy():
 		for a_index in range(A_count):
 			value = 0.0
 			for x_to_index in range(X_count):
-				possiblity_transfer = P[x_from_index, x_to_index, a_index]
-				reward = R[x_from_index, x_to_index, a_index]
+				possiblity_transfer = P[x_from_index, a_index, x_to_index]
+				reward = R[x_from_index, a_index, x_to_index]
 				value += possiblity_transfer * (reward / float(t+1) + t * V[x_to_index] / float(t+1))
 			Q[x_from_index, a_index] = value
 	# print Q
@@ -61,17 +61,19 @@ def purePolicy(Pi):
 
 while True:
 	V2 = newValue()
-	Pi = thePolicy()
-	clear_policy = purePolicy(Pi)
-	print clear_policy
-	# print V2
 	value_distance = valueDistance(V, V2)
-	# print value_distance
-	if valueDistance < 0.01:
+	if value_distance < 0.0001:
+		Pi = thePolicy()
+		clear_policy = purePolicy(Pi)
+		print ''
+		print 'result:'
+		print clear_policy
+		print V2
 		break
 	V = V2
+	print t, value_distance
 	t += 1
-	if t > 10:
+	if t > 100:
 		break
 
 
