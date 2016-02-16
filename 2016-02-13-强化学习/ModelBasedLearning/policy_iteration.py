@@ -39,7 +39,7 @@ def newPolicy():
 				reward = R[x_from_index, x_to_index, a_index]
 				value += possiblity_transfer * (reward / float(T+1) + T * V[x_to_index] / float(T+1))
 			Q[x_from_index, a_index] = value
-	print Q
+	# print Q
 	QMaxIndex = np.argmax(Q, axis=1)
 	Pitmp = np.zeros((X_count, A_count))
 	for i in range(X_count):
