@@ -14,7 +14,5 @@ R = np.random.randint(5, size=(X_count, A_count, X_count)) + 1.0
 # print R
 # print ''
 
-data_path = 'data'
-removeAndCreateDir(data_path)
-np.save(data_path + '/P', P)
-np.save(data_path + '/R', R)
+np.save('P', P)
+np.save('R', R)
