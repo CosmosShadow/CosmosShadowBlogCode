@@ -69,8 +69,12 @@ class MonteCarloOnPolicy(object):
 	def purePolicy(self):
 		return np.argmax(self.Pi, axis=1)
 
+	def clearHistory(self):
+		self.Q = np.zeros((self.X_count, self.A_count))
+		self.Q_count = np.zeros((self.X_count, self.A_count))
+
 	def test(self):
-		for j in xrange(10000):
+		for j in xrange(1000):
 			print self.purePolicy()
 			(x, a, r) = self.newTrace()
 			self.updateQi(x, a, r)
