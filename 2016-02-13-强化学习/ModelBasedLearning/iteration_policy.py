@@ -1,13 +1,14 @@
 # coding: utf-8
 import numpy as np
+import sys
 
-data_path = 'data'
+model_path = 'model/watermelon'
+sys.path.append(model_path)
 from config import *
+P = np.load(model_path + '/P.npy')
+R = np.load(model_path + '/R.npy')
 
-P = np.load(data_path + '/P.npy')
-R = np.load(data_path + '/R.npy')
-T = 5
-
+T = 20
 V = np.zeros(X_count)
 Pi = np.ones((X_count, A_count)) / float(A_count)
 

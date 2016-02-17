@@ -1,13 +1,13 @@
 # coding: utf-8
 import numpy as np
+
+import sys
+model_path = 'model/watermelon'
+sys.path.append(model_path)
 from config import *
+P = np.load(model_path + '/P.npy')
+R = np.load(model_path + '/R.npy')
 
-# X_count = 5
-# A_count = 4
-
-data_path = 'data'
-P = np.load(data_path + '/P.npy')
-R = np.load(data_path + '/R.npy')
 V = np.zeros(X_count)
 
 t = 1

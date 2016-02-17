@@ -2,20 +2,18 @@
 import numpy as np
 import random
 from scipy import stats
-import sys
-sys.path.append('../ModelBasedLearning')
-from config import *
 
-# X_count = 5
-# A_count = 4
+import sys
+model_path = '../ModelBasedLearning/model/watermelon'
+sys.path.append(model_path)
+from config import *
 
 class MonteCarloOffPolicy(object):
 	def __init__(self):
-		data_path = '../ModelBasedLearning/data'
 		self.X_count = X_count
 		self.A_count = A_count
-		self.P = np.load(data_path + '/P.npy')
-		self.R = np.load(data_path + '/R.npy')
+		self.P = np.load(model_path + '/P.npy')
+		self.R = np.load(model_path + '/R.npy')
 		self.Pi = np.ones((self.X_count, self.A_count)) / float(self.A_count)
 		self.Pi_greedy = np.ones((self.X_count, self.A_count)) / float(self.A_count)	#策略对应的贪心策略
 		self.Q = np.zeros((self.X_count, self.A_count))
