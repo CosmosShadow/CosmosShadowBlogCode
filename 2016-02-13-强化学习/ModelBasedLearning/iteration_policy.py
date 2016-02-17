@@ -1,11 +1,9 @@
 # coding: utf-8
 import numpy as np
-from config import *
-
-# X_count = 5
-# A_count = 4
 
 data_path = 'data'
+from config import *
+
 P = np.load(data_path + '/P.npy')
 R = np.load(data_path + '/R.npy')
 T = 5
