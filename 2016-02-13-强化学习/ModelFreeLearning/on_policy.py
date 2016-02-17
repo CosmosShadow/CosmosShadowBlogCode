@@ -70,7 +70,7 @@ class MonteCarloOnPolicy(object):
 		return np.argmax(self.Pi, axis=1)
 
 	def test(self):
-		for j in xrange(1000):
+		for j in xrange(10000):
 			print self.purePolicy()
 			(x, a, r) = self.newTrace()
 			self.updateQi(x, a, r)
