@@ -24,7 +24,11 @@ policy greedy
 [1 2 1 3 3]  0.1   
 [3 2 1 0 3]  0.1   
 
+### Temporal Difference
 
+#### Sarsa
+[0 0 1 0]
 
+#### Q-Learning
 
 
