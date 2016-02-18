@@ -26,9 +26,11 @@ policy greedy
 
 ### Temporal Difference
 
+采用西瓜浇水的模型得出的策略
+
 #### Sarsa
 [0 0 1 0]
 
 #### Q-Learning
-
+[0 0 1 0]
 
