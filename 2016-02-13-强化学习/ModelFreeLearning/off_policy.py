@@ -4,7 +4,8 @@ import random
 from scipy import stats
 
 import sys
-model_path = '../ModelBasedLearning/model/watermelon'
+# model_path = '../ModelBasedLearning/model/watermelon'
+model_path = '../ModelBasedLearning/model/random_model'
 sys.path.append(model_path)
 from config import *
 
@@ -55,14 +56,16 @@ class MonteCarloOffPolicy(object):
 		p_radio = np.zeros(self.T)
 		for i in range(self.T):
 			p_radio[i] = self.Pi[x[i], a[i]] / self.Pi_greedy[x[i], a[i]]
-			# p_radio[i] = 1.0 / self.Pi_greedy[x[i], a[i]]
-		for i in xrange(1, self.T):
-			r[i] *= np.prod(p_radio[i:])
-		return (x, a, r)
+		# # 初始的公式
+		# for i in xrange(1, self.T):
+		# 	r[i] *= np.prod(p_radio[i:])
+		return (x, a, r, p_radio)
 
-	def updateQi(self, x, a, r):
+	def updateQi(self, x, a, r, p_radio):
 		for t in range(self.T):
-			gain_reward = np.sum(r[t+1:]) / float(r[t+1:].shape[0])	#后续的平均奖赏
+			# gain_reward = np.sum(r[t+1:]) / float(r[t+1:].shape[0])							#初始的公式
+			# gain_reward = np.sum(r[t+1:]) * np.prod(p_radio[t:]) / float(r[t+1:].shape[0])	#周老师最新公式
+			gain_reward = np.sum(r[t+1:]) * np.prod(p_radio[t+1:]) / float(r[t+1:].shape[0])	#我认为在周老师公式上起码要改动的
 			self.Q[x[t], a[t]] = ((self.Q[x[t], a[t]] * self.Q_count[x[t], a[t]]) + gain_reward) / float(self.Q_count[x[t], a[t]] + 1)	#更新状态-动作值函数Q
 			self.Q_count[x[t], a[t]] += 1	#更新计数
 
@@ -79,12 +82,12 @@ class MonteCarloOffPolicy(object):
 		return np.argmax(self.Pi, axis=1)
 
 	def test(self):
-		for j in xrange(1000):
+		for j in xrange(5000):
 			print self.purePolicy()
 			# if j%20 == 0:
 			# 	print self.Q
-			(x, a, r) = self.newTrace()
-			self.updateQi(x, a, r)
+			(x, a, r, p_radio) = self.newTrace()
+			self.updateQi(x, a, r, p_radio)
 			self.updatePi()
 			# print Pi
 
