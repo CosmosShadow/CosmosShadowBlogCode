@@ -9,4 +9,9 @@ gy = T.grad(y, x)
 f = theano.function([x], gy)
 
 print f(4)
+
+# 输出gy的表达式
+print pp(gy)
+
+# 输出gy的表达式
 print pp(f.maker.fgraph.outputs[0])
