@@ -2,7 +2,7 @@
 
 import random
 
-def random_discount(cut_point, below_possibility):
+def random_number(cut_point, below_possibility):
 	sample_below_possibility = cut_point / 1.0
 	sample_above_possibility = (1 - cut_point) / 1.0
 	above_possibility = 1 - below_possibility
@@ -27,7 +27,7 @@ if __name__ == '__main__':
 	above_count = 0
 	count = 100000
 	for x in range(count):
-		discount = random_discount(cut_point, below_possibility)
+		discount = random_number(cut_point, below_possibility)
 		if discount < 0.01 or discount > 1:
 			print 'error: out of range'
 		if discount < cut_point:
