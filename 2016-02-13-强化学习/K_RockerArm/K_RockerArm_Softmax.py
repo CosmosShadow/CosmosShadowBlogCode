@@ -22,8 +22,7 @@ class KRockerArm_Softmax(object):
 		max_exp_parameter = np.max(exp_parameter)
 		normal_exp_parameter = exp_parameter - max_exp_parameter
 		energy = np.exp(normal_exp_parameter)
-		energy_sum = np.sum(energy)
-		possibility = energy / energy_sum
+		possibility = energy / np.sum(energy)
 		# 根据概率分布，返回随机值
 		K_indexs = np.arange(self.K_count) + 1
 		custm = stats.rv_discrete(name='custm', values=(K_indexs, possibility))
