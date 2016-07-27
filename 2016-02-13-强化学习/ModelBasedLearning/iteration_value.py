@@ -11,6 +11,7 @@ R = np.load(model_path + '/R.npy')
 V = np.zeros(X_count)
 
 t = 1
+gamma = 0.9
 
 def newValue():
 	# print t
@@ -21,11 +22,8 @@ def newValue():
 			for x_to_index in range(X_count):
 				possiblity_transfer = P[x_from_index, a_index, x_to_index]
 				reward = R[x_from_index, a_index, x_to_index]
-				one_value = possiblity_transfer * (reward / float(t) + (t - 1) * V[x_to_index] / float(t))
-				# print t, possiblity_transfer, reward, V[x_to_index], one_value
+				one_value = possiblity_transfer * (reward + gamma * V[x_to_index])
 				value += one_value
-			# print value
-			# print ''
 			Q[x_from_index, a_index] = value
 	Vtmp = np.max(Q, axis=1)
 	return Vtmp
@@ -47,9 +45,11 @@ def thePolicy():
 			for x_to_index in range(X_count):
 				possiblity_transfer = P[x_from_index, a_index, x_to_index]
 				reward = R[x_from_index, a_index, x_to_index]
-				value += possiblity_transfer * (reward / float(t+1) + t * V[x_to_index] / float(t+1))
+				value += possiblity_transfer * (reward + gamma * V[x_to_index])
 			Q[x_from_index, a_index] = value
-	# print Q
+	print 
+	print 'Q: '
+	print Q
 	QMaxIndex = np.argmax(Q, axis=1)
 	Pitmp = np.zeros((X_count, A_count))
 	for i in range(X_count):
@@ -73,7 +73,7 @@ while True:
 	V = V2
 	print t, value_distance
 	t += 1
-	if t > 100:
+	if t > 1000:
 		break
 
 
