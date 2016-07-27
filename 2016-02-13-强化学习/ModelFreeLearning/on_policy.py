@@ -77,7 +77,7 @@ class MonteCarloOnPolicy(object):
 			(x, a, r) = self.newTrace()
 			self.updateQi(x, a, r)
 			self.updatePi()
-			# print Pi
+			# print self.Pi
 
 if __name__ == '__main__':
 	learning = MonteCarloOnPolicy()
