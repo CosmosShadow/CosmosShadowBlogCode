@@ -1,12 +1,14 @@
 # coding: utf-8
 import numpy as np
 import sys
+import Array.Softmax as Softmax
 
 model_path = 'model/watermelon'
 sys.path.append(model_path)
 from config import *
 P = np.load(model_path + '/P.npy')
 R = np.load(model_path + '/R.npy')
+
 
 T = 20
 V = np.zeros(X_count)
@@ -38,23 +40,25 @@ def newPolicy():
 				reward = R[x_from_index, a_index, x_to_index]
 				value += possiblity_transfer * (reward / float(T+1) + T * V[x_to_index] / float(T+1))
 			Q[x_from_index, a_index] = value
-	# print Q
-	QMaxIndex = np.argmax(Q, axis=1)
-	Pitmp = np.zeros((X_count, A_count))
-	for i in range(X_count):
-		Pitmp[i, QMaxIndex[i]] = 1.0
-	return Pitmp
+	return Softmax.softmax(Q, 1)
+	# # print Q
+	# QMaxIndex = np.argmax(Q, axis=1)
+	# Pitmp = np.zeros((X_count, A_count))
+	# for i in range(X_count):
+	# 	Pitmp[i, QMaxIndex[i]] = 1.0
+	# return Pitmp
 
 def purePolicy():
 	return np.argmax(Pi, axis=1)
 
 for i in range(100):
 	Piclear = purePolicy()
-	print Piclear
 	V = newValue()
 	Pi = newPolicy()
+	# print V
+	print Pi
 	if np.array_equal(Piclear, purePolicy()):
-		print V
+		# print V
 		break
 
 
